@@ -1,0 +1,20 @@
+{
+  "_说明": "兽药临床审批补充记录。当主管网站 vdts.ivdc.org.cn 未及时更新时，将经企业公告/公开新闻核查到的新临床批件按如下格式填入 records 数组。运行 ingest_clinical.py 即写入本地库并在「更新动态」标注来源。去重键为 approval_no + org。",
+  "records": [
+    {
+      "reg_type": "domestic",
+      "drug_name": "示例：XX病mRNA疫苗",
+      "org": "示例：某某生物股份有限公司",
+      "species": "猪",
+      "indication": "示例：XX病",
+      "approval_no": "2025XXX",
+      "accept_no": "",
+      "approve_date": "2025-08-01",
+      "status": "同意临床试验",
+      "is_pet": 0,
+      "source_name": "某某公司公告",
+      "source_url": "https://example.com/news/xxx",
+      "note": "来自企业公告补充核查"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "国际兽用生物制品监管追踪工作台",
+  "short_name": "国际生物制品",
+  "description": "追踪美国 USDA/CVB 与欧盟 EMA/CVM 等国际兽用生物制品获批信息",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#1e6fd9",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

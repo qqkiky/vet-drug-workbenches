@@ -1,0 +1,52 @@
+name: 国际工作台每日同步
+
+on:
+  schedule:
+    # 每天 20:00 北京时间（12:00 UTC）
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+      - name: 抓取并重建（USDA/CVB + EMA/CVMP）
+        run: python daily_sync.py --json
+        env:
+          REGULATORY_TIMEOUT: "60"
+          EMA_MAX_PAGES: "40"
+      - name: 追加变更日志并提交推送
+        run: |
+          python tools/append_changelog.py || true
+          git config user.name "qqkiky"
+          git config user.email "qqkiky@users.noreply.github.com"
+          git add data dist static docs
+          if git diff --cached --quiet; then
+            echo "无数据变更，跳过提交"
+          else
+            git commit -m "chore(intl): 每日同步 $(date -u +%Y-%m-%d)"
+            git push
+          fi
+      - name: 组装站点
+        run: python publish_site.py
+      - name: 上传站点
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: 发布到 GitHub Pages
+        uses: actions/deploy-pages@v4

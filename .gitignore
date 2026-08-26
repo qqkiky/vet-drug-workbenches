@@ -1,0 +1,62 @@
+# ---------- Python ----------
+.venv/
+__pycache__/
+*.pyc
+
+# ---------- WorkBuddy 运行时与本地会话 ----------
+.workbuddy/
+workbuddy-session/
+daily-report/
+skills/
+兽用生物制品监管追踪工作台/
+
+# ---------- 早期探索与可重建缓存 ----------
+feasibility/
+workbench/pages/
+workbench/web_china_backup/
+workbench/intl_web/
+
+# ---------- 日志 / 锁 / 备份 ----------
+*.log
+*.lock
+*.bak
+*.bak-*
+*.bak_*
+
+# ---------- 临时与一次性文件 ----------
+b64_chunks.txt
+_node_procs.txt
+_npm_check.txt
+_proc_check.txt
+ts_up.log
+workbench/_*.py
+workbench/_*.json
+workbench/*.png
+workbench/email_recipients.json
+workbench/patch_build_web.py
+workbench/fill_indications_online.py
+workbench/init_clinical.py
+workbench/verify_fixes.py
+workbench/verify_intl.py
+workbench/build_intl_web.py
+workbench/apply_*.py
+workbench/reclassify_*.py
+workbench/gen_icon.py
+workbench/gen_us_eu_icons.py
+
+# ---------- 本机隧道 / 工具二进制 ----------
+start.bat
+start_tunnel.bat
+tailscale_install.msi
+tailscale_setup.exe
+tools/*
+!tools/*.py
+
+# ---------- 发布产物（由 publish_site.py 本地生成） ----------
+_site/
+
+# ---------- 操作系统 ----------
+Thumbs.db
+.DS_Store
+patch_biologics_pwa.py
+verify_mobile_pwa.py

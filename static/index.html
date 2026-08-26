@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>国际兽用生物制品监管追踪工作台</title>
+  <link rel="manifest" href="manifest.webmanifest?v=6" />
+  <link rel="apple-touch-icon" href="icon-192.png?v=6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#1e6fd9" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="国际生物制品" />
+  <link rel="stylesheet" href="styles.css?v=6" />
+  <script src="chart.umd.min.js?v=6" defer></script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🐾</span>
+      <h1 id="app-title">国际兽用生物制品监管追踪工作台</h1>
+    </div>
+    <div class="actions">
+      <label class="live-toggle" title="Use live USDA/CVB + EMA/CVMP regulator feeds">
+        <input type="checkbox" id="chk-live" checked disabled />
+        <span id="lbl-live">实时数据源</span>
+      </label>
+      <label class="live-toggle live-toggle-sub" id="wrap-replace" title="Clear sample data and show only live feed">
+        <input type="checkbox" id="chk-replace" />
+        <span id="lbl-replace">替换示例</span>
+      </label>
+      <button id="btn-update" class="btn btn-primary" title="Pull latest approvals">
+        <span id="lbl-update">更新数据</span>
+      </button>
+      <button id="btn-excel" class="btn btn-ghost" title="Export Excel">Excel</button>
+      <button id="btn-pdf" class="btn btn-ghost" title="Export PDF">PDF</button>
+      <button id="btn-bell" class="btn btn-icon" title="Notifications">
+        🔔<span id="notif-badge" class="badge hidden">0</span>
+      </button>
+      <button id="btn-lang" class="btn btn-lang">EN</button>
+    </div>
+  </header>
+
+  <!-- Notification dropdown -->
+  <div id="notif-panel" class="notif-panel hidden">
+    <div class="notif-head">
+      <strong id="lbl-notif-title">通知</strong>
+      <button id="btn-notif-read" class="link"><span id="lbl-notif-read">全部已读</span></button>
+    </div>
+    <div id="notif-list" class="notif-list"></div>
+  </div>
+
+  <!-- SYNC-BAR:BEGIN -->
+  <div id="sync-bar" class="sync-bar hidden">
+    <span id="sync-dot" class="sync-dot"></span>
+    <span id="sync-text" class="sync-text">正在读取同步状态…</span>
+    <button id="sync-toggle" class="sync-link" type="button">详情</button>
+  </div>
+  <div id="sync-detail" class="sync-detail hidden"></div>
+  <div id="sync-update" class="sync-update hidden">
+    <span>检测到新的每日数据</span>
+    <button id="sync-reload" class="sync-reload" type="button">立即刷新</button>
+  </div>
+  <script>
+  (function () {
+    var RESULT = {
+      ok:      { cls: "ok",      label: "正常" },
+      partial: { cls: "partial", label: "部分成功" },
+      failed:  { cls: "failed",  label: "失败" }
+    };
+
+    function fmtDate(s) { return (s || "").replace("T", " ").slice(0, 16); }
+
+    function render(st) {
+      var bar = document.getElementById("sync-bar");
+      if (!bar || !st || !st.last_sync_at) return;
+      var meta = RESULT[st.result] || { cls: "partial", label: "未知" };
+      var dot = document.getElementById("sync-dot");
+      dot.className = "sync-dot " + meta.cls;
+
+      var added = st.today_added != null ? st.today_added : (st.added || 0);
+      var parts = ["每日同步 " + fmtDate(st.last_sync_at)];
+      parts.push(added > 0 ? ("新增 " + added + " 条") : "无新增");
+      if (st.new_recent_count) parts.push("新获批 " + st.new_recent_count + " 条");
+      parts.push("在库 " + (st.total || 0) + " 条");
+      document.getElementById("sync-text").textContent = parts.join(" · ");
+      bar.classList.remove("hidden");
+
+      var box = document.getElementById("sync-detail");
+      var html = "";
+      if (st.message) html += '<p class="sync-msg">' + st.message + "</p>";
+      if (st.sources && st.sources.length) {
+        html += '<ul class="sync-src">';
+        st.sources.forEach(function (s) {
+          html += "<li><span class=\"sync-dot " + (s.ok ? "ok" : "failed") +
+                  '"></span>' + s.label + " — " +
+                  (s.ok ? (s.count + " 条记录") : ("不可用" + (s.error ? "：" + s.error : ""))) +
+                  "</li>";
+        });
+        html += "</ul>";
+      }
+      if (st.new_items && st.new_items.length) {
+        html += '<p class="sync-sub">本次新获批（' + st.new_items.length + " 条）</p><ol class=\"sync-new\">";
+        st.new_items.slice(0, 10).forEach(function (p) {
+          html += "<li>" + (p.product_name || "") + " <em>" + (p.region || "") +
+                  " · " + (p.approval_date || "") + "</em></li>";
+        });
+        html += "</ol>";
+      }
+      if (st.history && st.history.length) {
+        html += '<p class="sync-sub">最近同步记录</p><ul class="sync-hist">';
+        st.history.slice(0, 7).forEach(function (h) {
+          html += "<li>" + h.date + " · 新增 " + (h.added || 0) +
+                  " · 变更 " + ((h.updated || 0) + (h.status_change || 0)) +
+                  " · " + ((RESULT[h.result] || {}).label || h.result) + "</li>";
+        });
+        html += "</ul>";
+      }
+      box.innerHTML = html || "<p class=\"sync-msg\">暂无详情</p>";
+
+      var btn = document.getElementById("sync-toggle");
+      btn.onclick = function () {
+        box.classList.toggle("hidden");
+        btn.textContent = box.classList.contains("hidden") ? "详情" : "收起";
+      };
+    }
+
+    function load() {
+      if (window.__SYNC_STATUS__ && window.__SYNC_STATUS__.last_sync_at) {
+        render(window.__SYNC_STATUS__);
+        return;
+      }
+      var urls = ["sync_status.json", "/api/sync-status"];
+      (function next(i) {
+        if (i >= urls.length) return;
+        fetch(urls[i] + "?t=" + Date.now(), { cache: "no-store" })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(render)
+          .catch(function () { next(i + 1); });
+      })(0);
+    }
+
+    // Poll version.json so an installed PWA picks up the daily rebuild without
+    // the user having to clear the app cache.
+    function watchVersion() {
+      var current = window.__BUILD_ID__ || null;
+      if (!current) return;
+      setInterval(function () {
+        fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(function (v) {
+            if (v.build && v.build !== current) {
+              document.getElementById("sync-update").classList.remove("hidden");
+            }
+          })
+          .catch(function () {});
+      }, 15 * 60 * 1000);
+      var rb = document.getElementById("sync-reload");
+      if (rb) rb.onclick = function () {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.getRegistrations().then(function (rs) {
+            rs.forEach(function (r) { r.update(); });
+            location.reload(true);
+          });
+        } else { location.reload(true); }
+      };
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () { load(); watchVersion(); });
+    } else { load(); watchVersion(); }
+  })();
+  </script>
+  <!-- SYNC-BAR:END -->
+
+  <main>
+    <!-- Real-time update progress panel (hidden until an update runs) -->
+    <section id="update-panel" class="card update-panel hidden">
+      <div class="section-head">
+        <h3 id="lbl-update-title">实时更新进度</h3>
+        <button id="btn-update-close" class="btn btn-ghost" title="关闭">×</button>
+      </div>
+      <div id="update-log" class="update-log"></div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters card">
+      <select id="f-region" class="select"><option value="">地区</option></select>
+      <select id="f-species" class="select"><option value="">物种</option></select>
+      <select id="f-type" class="select"><option value="">产品类型</option></select>
+      <select id="f-status" class="select"><option value="">状态</option></select>
+      <input id="f-q" class="search" type="text" placeholder="搜索产品 / 企业 / 适应症..." />
+      <button id="btn-reset" class="btn btn-ghost"><span id="lbl-reset">重置</span></button>
+      <span id="result-count" class="count"></span>
+    </section>
+
+    <!-- KPI + charts -->
+    <section class="stats-grid">
+      <div class="kpis" id="kpis"></div>
+      <div class="card chart-card">
+        <h3 id="lbl-trend">年度获批趋势</h3>
+        <canvas id="chart-trend"></canvas>
+        <p id="trend-note" class="chart-note hidden"></p>
+      </div>
+      <div class="card chart-card">
+        <h3 id="lbl-companies">企业分布（Top 10）</h3>
+        <canvas id="chart-companies"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3 id="lbl-types">产品类型分布</h3>
+        <canvas id="chart-types"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3 id="lbl-status">状态分布</h3>
+        <canvas id="chart-status"></canvas>
+      </div>
+    </section>
+
+    <!-- Products table -->
+    <section class="card">
+      <div class="section-head">
+        <h3 id="lbl-products">获批产品</h3>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-products">
+          <thead>
+            <tr>
+              <th id="h-region">地区</th>
+              <th id="h-species">物种</th>
+              <th id="h-type">类型</th>
+              <th id="h-name">产品名称</th>
+              <th id="h-no">获批编号</th>
+              <th id="h-mfr">生产企业</th>
+              <th id="h-ind">适应症</th>
+              <th id="h-form">剂型</th>
+              <th id="h-strength">规格</th>
+              <th id="h-date">获批日期</th>
+              <th id="h-status">状态</th>
+              <th id="h-source">资料来源</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Changes -->
+    <section class="card">
+      <h3 id="lbl-changes">变更记录（新增 / 更新 / 状态变更 / 撤回）</h3>
+      <div id="changes-list" class="changes"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js?v=6" defer></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+name: 部署静态网站 (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 组装站点（国际 / 国内）
+        run: python publish_site.py
+      - name: 上传站点
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: 发布到 GitHub Pages
+        uses: actions/deploy-pages@v4
