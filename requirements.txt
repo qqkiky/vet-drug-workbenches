@@ -4,3 +4,4 @@ reportlab>=4.0
 requests>=2.31
 pillow>=10.0   # required by reportlab for image support
 pdfplumber>=0.11   # USDA/CVB PDF 目录解析
+beautifulsoup4>=4.12   # CN workbench announcement parser (workbench/)
