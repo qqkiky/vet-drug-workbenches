@@ -1,9 +1,9 @@
 {
-  "last_sync_at": "2026-09-03 15:25:27",
-  "last_sync_date": "2026-09-03",
+  "last_sync_at": "2026-09-04 16:10:53",
+  "last_sync_date": "2026-09-04",
   "result": "ok",
-  "message": "新增 8 条，变更 0 条",
-  "added": 8,
+  "message": "数据源无新增，已是最新",
+  "added": 0,
   "updated": 0,
   "status_change": 0,
   "total": 869,
@@ -12,7 +12,7 @@
       "key": "EMA-CVMP",
       "label": "欧盟 EMA/CVMP",
       "ok": true,
-      "count": 17,
+      "count": 9,
       "url": "https://medicines.health.europa.eu/veterinary/en/search-medicines",
       "error": ""
     },
@@ -27,11 +27,22 @@
   ],
   "new_items": [],
   "new_recent_count": 0,
-  "duration_sec": 355.1,
+  "duration_sec": 346.8,
   "window_days": 120,
-  "today_added": 8,
+  "today_added": 0,
   "runs_today": 1,
   "history": [
+    {
+      "date": "2026-09-04",
+      "at": "2026-09-04 16:10:53",
+      "result": "ok",
+      "added": 0,
+      "updated": 0,
+      "status_change": 0,
+      "total": 869,
+      "runs": 1,
+      "message": "数据源无新增，已是最新"
+    },
     {
       "date": "2026-09-03",
       "at": "2026-09-03 15:25:27",
@@ -167,17 +178,6 @@
     {
       "date": "2026-08-12",
       "at": "2026-08-12 23:05:20",
-      "result": "partial",
-      "added": 0,
-      "updated": 0,
-      "status_change": 0,
-      "total": 103,
-      "runs": 2,
-      "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新"
-    },
-    {
-      "date": "2026-08-11",
-      "at": "2026-08-11 20:26:53",
       "result": "partial",
       "added": 0,
       "updated": 0,
