@@ -4,63 +4,71 @@
 const I18N = {
   zh: {
     title: "国际兽用生物制品监管追踪工作台",
-    update: "更新数据", excel: "Excel", pdf: "PDF",
-    live: "实时数据源", replace: "替换示例", updating: "更新中…",
+    subtitle: "美国 USDA/CVB · 欧盟 EMA/CVMP 获批产品",
+    update: "同步数据", excel: "Excel", pdf: "PDF",
+    live: "数据源状态", replace: "替换示例", updating: "更新中…",
     notifications: "通知", markRead: "全部已读",
     region: "地区", species: "物种", type: "产品类型", status: "状态", source: "资料来源",
-    search: "搜索产品 / 企业 / 适应症...", reset: "重置",
-    trend: "年度获批趋势", companies: "企业分布（Top 10）",
+    search: "搜索 产品/企业/适应症…", reset: "重置",
+    trend: "历年获批数量", companies: "Top 10 生产企业",
     types: "产品类型分布", statusDist: "状态分布",
-    products: "获批产品", changes: "变更记录（新增 / 更新 / 状态变更 / 撤回）",
-    noChanges: "暂无变更记录。", noNotif: "暂无通知。",
-    allRead: "已全部标记为已读", results: "条结果",
+    products: "获批产品", changes: "变更记录",
+    noChanges: "暂无变更记录", noNotif: "暂无通知",
+    allRead: "已全部标记为已读", results: "条",
     kpiTotal: "总获批", kpiUS: "美国", kpiEU: "欧盟",
     kpiVaccine: "疫苗", kpiDiag: "诊断试剂", kpiThera: "治疗性",
     ingested: "数据已更新", new: "新增", updated: "信息更新",
     statusChange: "状态变更", withdrawn: "撤回",
     from: "原值", to: "新值", field: "字段",
-    toastNew: "条新通知", exporting: "正在导出...",
+    toastNew: "条新通知", exporting: "正在导出…",
     dateUnknown: "未知",
-    liveUpdate: "🔄 实时更新数据",
-    updatingData: "正在实时抓取 USDA / EMA 并更新…",
-    updateTitle: "实时更新进度",
-    updateDone: "✅ 更新完成",
-    updateFailed: "❌ 更新失败",
-    publishHint: "公网链接每日 20:00 自动发布最新数据；如需立即发布，回复“发布”。",
-    trendNote: "美国 USDA/CVB 官方代码本未公开各产品原始获批日期，趋势图仅含已标注日期的地区；当前有 {n} 项美国产品获批日期未知。",
+    liveUpdate: "🔄 同步数据",
+    updatingData: "正在抓取 USDA / EMA 数据…",
+    updateTitle: "同步进度",
+    updateDone: "✅ 同步完成",
+    updateFailed: "❌ 同步失败",
+    publishHint: "更新已入库；本站由 GitHub Pages 自动发布，推送后约 1–3 分钟自动生效。",
+    trendNote: "美国 USDA/CVB 官方目录未公开逐产品获批日期，趋势图仅统计有获批日期的记录（{n} 条美国产品日期未知）。",
+    noMatchTitle: "未找到匹配的产品",
+    noMatchHint: "请调整筛选条件或搜索关键词后重试。",
+    snapshotBanner: "📅 数据快照{d} · 每日自动更新",
   },
   en: {
     title: "Veterinary Biologics Regulatory Tracker",
-    update: "Update Data", excel: "Excel", pdf: "PDF",
-    live: "Live sources", replace: "Replace sample", updating: "Updating…",
+    subtitle: "USDA/CVB · EMA/CVMP approved products",
+    update: "Sync Data", excel: "Excel", pdf: "PDF",
+    live: "Source status", replace: "Replace sample", updating: "Updating…",
     notifications: "Notifications", markRead: "Mark all read",
     region: "Region", species: "Species", type: "Product Type", status: "Status", source: "Source",
-    search: "Search product / company / indication...", reset: "Reset",
-    trend: "Annual Approval Trend", companies: "Top 10 Companies",
+    search: "Search products/companies/indications…", reset: "Reset",
+    trend: "Approvals by Year", companies: "Top 10 Manufacturers",
     types: "Product Type Breakdown", statusDist: "Status Breakdown",
-    products: "Approved Products", changes: "Changes (New / Updated / Status / Withdrawn)",
-    noChanges: "No changes recorded yet.", noNotif: "No notifications.",
+    products: "Approved Products", changes: "Change Log",
+    noChanges: "No changes yet.", noNotif: "No notifications yet.",
     allRead: "All marked as read", results: "results",
-    kpiTotal: "Total", kpiUS: "United States", kpiEU: "European Union",
-    kpiVaccine: "Vaccines", kpiDiag: "Diagnostics", kpiThera: "Therapeutics",
+    kpiTotal: "Total", kpiUS: "US", kpiEU: "EU",
+    kpiVaccine: "Vaccine", kpiDiag: "Diagnostic", kpiThera: "Therapeutic",
     ingested: "Data updated", new: "NEW", updated: "UPDATED",
     statusChange: "STATUS CHANGE", withdrawn: "WITHDRAWN",
     from: "from", to: "to", field: "field",
-    toastNew: "new notifications", exporting: "Exporting...",
+    toastNew: "new notifications", exporting: "Exporting…",
     dateUnknown: "Unknown",
-    liveUpdate: "🔄 Live Update",
-    updatingData: "Live-scraping USDA / EMA and updating…",
-    updateTitle: "Live Update Progress",
-    updateDone: "✅ Update complete",
-    updateFailed: "❌ Update failed",
-    publishHint: "The public link auto-publishes daily at 20:00; reply 'publish' for an instant push.",
-    trendNote: "USDA/CVB's official codebook does not publish per-product approval dates, so the trend shows only regions with dated records; {n} US products have an unknown approval date.",
+    liveUpdate: "🔄 Sync Data",
+    updatingData: "Fetching USDA / EMA data…",
+    updateTitle: "Sync Progress",
+    updateDone: "✅ Sync complete",
+    updateFailed: "❌ Sync failed",
+    publishHint: "Stored. This page is auto-published to GitHub Pages and goes live ~1\u20133 min after each update is pushed.",
+    trendNote: "The USDA/CVB catalog does not publish per-product approval dates, so the trend covers only records with a known date ({n} US products are undated).",
+    noMatchTitle: "No matching products",
+    noMatchHint: "Try adjusting the filters or search keywords.",
+    snapshotBanner: "📅 Snapshot{d} · auto-updated daily",
   }
 };
 
 // Category label maps
 const LABELS = {
-  region: { zh: { US: "美国", EU: "欧盟" }, en: { US: "United States", EU: "EU" } },
+  region: { zh: { US: "美国", EU: "欧盟" }, en: { US: "US", EU: "EU" } },
   species: { zh: { Cat: "猫", Dog: "犬", Both: "猫犬" }, en: { Cat: "Cat", Dog: "Dog", Both: "Cat & Dog" } },
   type: { zh: { Vaccine: "疫苗", Diagnostic: "诊断试剂", Therapeutic: "治疗性生物制品" },
           en: { Vaccine: "Vaccine", Diagnostic: "Diagnostic", Therapeutic: "Therapeutic" } },
@@ -94,6 +102,7 @@ function applyLang() {
   const dict = I18N[LANG];
   const setText = (id, text) => { const el = $(id); if (el) el.textContent = text; };
   setText("app-title", dict.title);
+  setText("app-subtitle", dict.subtitle);
   setText("lbl-update", dict.liveUpdate);
   setText("lbl-update-title", dict.updateTitle);
   setText("lbl-live", dict.live);
@@ -129,6 +138,7 @@ function applyLang() {
   fillSelect("f-type", META.product_types, dict.type, "type");
   fillSelect("f-status", META.statuses, dict.status, "status");
   $("btn-lang").textContent = LANG === "zh" ? "EN" : "中";
+  try { window.dispatchEvent(new Event("vbt-langchange")); } catch (e) {}
 }
 
 function fillSelect(id, values, placeholder, cat) {
@@ -158,8 +168,8 @@ function currentFilters() {
 function showEmptyState() {
   const tb = $("tbl-products").querySelector("tbody");
   tb.innerHTML = `<tr><td colspan="12" class="empty-state">
-    <div class="empty-title">未能加载到数据</div>
-    <div class="empty-hint">如果你是在 WorkBuddy 软件内预览面板中查看，请点击右上角“用浏览器打开”图标，<br>或复制地址 <code>http://127.0.0.1:5000</code> 到 Chrome / Edge 地址栏访问。</div>
+    <div class="empty-title">${t("noMatchTitle")}</div>
+    <div class="empty-hint">${t("noMatchHint")}</div>
   </td></tr>`;
   $("result-count").textContent = "0 " + t("results");
 }
@@ -246,19 +256,6 @@ function renderStats(s) {
         data: comp.map(c => c.count), backgroundColor: "#2e6da4" }] },
     { indexAxis: "y", plugins: { legend: { display: false } } });
 
-  // Type donut
-  renderChart("chart-types", "doughnut",
-    { labels: s.by_type.map(d => lbl("type", d.key)),
-      datasets: [{ data: s.by_type.map(d => d.count),
-        backgroundColor: ["#1f4e78", "#2e9e5b", "#e08a1e"] }] },
-    { plugins: { legend: { position: "bottom" } } });
-
-  // Status donut
-  renderChart("chart-status", "doughnut",
-    { labels: s.by_status.map(d => lbl("status", d.key)),
-      datasets: [{ data: s.by_status.map(d => d.count),
-        backgroundColor: ["#2e9e5b", "#e08a1e", "#c0392b"] }] },
-    { plugins: { legend: { position: "bottom" } } });
 }
 
 async function loadStats() {
@@ -328,10 +325,16 @@ async function refreshAll() {
 function wire() {
   // Static deploy mode: no backend, so hide live-update / export controls.
   if (window.__STATIC__) {
-    ["btn-update", "btn-excel", "btn-pdf"].forEach(id => {
+    ["btn-update", "btn-excel", "btn-pdf", "btn-bell"].forEach(id => {
       const el = $(id);
       if (el) el.style.display = "none";
     });
+    const liveToggle = $("chk-live");
+    if (liveToggle && liveToggle.closest) liveToggle.closest(".live-toggle").style.display = "none";
+    const wrapReplace = $("wrap-replace");
+    if (wrapReplace) wrapReplace.style.display = "none";
+    const csvBtn = $("btn-csv");
+    if (csvBtn) { csvBtn.classList.remove("hidden"); csvBtn.onclick = exportCSV; }
   }
   $("btn-lang").onclick = () => {
     LANG = LANG === "zh" ? "en" : "zh";
@@ -464,8 +467,7 @@ function showStaticBanner() {
   const d = window.__SNAPSHOT_DATE__ || "";
   const banner = document.createElement("div");
   banner.className = "static-banner";
-  banner.innerHTML = "📋 静态展示版 · 数据快照" + (d ? "（" + d + "）" : "") +
-    " · 分享此链接即可查看（不含实时更新 / 导出功能）";
+  banner.innerHTML = t("snapshotBanner").replace("{d}", d ? "（" + d + "）" : "");
   m.insertBefore(banner, m.firstChild);
 }
 
@@ -487,6 +489,37 @@ function renderStaticAll() {
   renderProducts(filteredProducts());
   renderStats(STATIC_DATA.stats);
   renderChanges(STATIC_DATA.changes);
+}
+
+function exportCSV() {
+  const rows = filteredProducts();
+  if (!rows.length) { toast(t("noMatchHint")); return; }
+  const zh = LANG === "zh";
+  const cols = [
+    [t("region"), r => lbl("region", r.region)],
+    [t("species"), r => lbl("species", r.species)],
+    [t("type"), r => lbl("type", r.product_type)],
+    [zh ? "产品名称" : "Product", r => r.product_name],
+    [zh ? "获批编号" : "Approval No.", r => r.approval_number],
+    [zh ? "生产企业" : "Manufacturer", r => r.manufacturer || ""],
+    [zh ? "适应症" : "Indication", r => r.indication || ""],
+    [zh ? "剂型" : "Dosage Form", r => r.dosage_form || ""],
+    [zh ? "规格" : "Strength", r => r.strength || ""],
+    [zh ? "获批日期" : "Approval Date", r => r.approval_date || ""],
+    [zh ? "状态" : "Status", r => lbl("status", r.status)],
+    [zh ? "资料来源" : "Source", r => r.source || ""],
+  ];
+  const csv = rows.map(row => cols.map(([, get]) => {
+    const v = String(get(row) == null ? "" : get(row));
+    return '"' + v.replace(/"/g, '""') + '"';
+  }).join(","));
+  csv.unshift(cols.map(c => c[0]).join(","));
+  const blob = new Blob(["\ufeff" + csv.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "vet-biologics-" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  toast(t("exporting"));
 }
 
 function esc(s) {
@@ -544,7 +577,9 @@ function showFatal(msg) {
         "<code>http://127.0.0.1:5000</code>，而非软件内预览面板。");
     }
   }
-  setInterval(async () => {
-    try { await updateBadge(); } catch (e) {}
-  }, 30000);  // poll notifications every 30s
+  if (!window.__STATIC__) {
+    setInterval(async () => {
+      try { await updateBadge(); } catch (e) {}
+    }, 30000);  // poll notifications every 30s
+  }
 })();
