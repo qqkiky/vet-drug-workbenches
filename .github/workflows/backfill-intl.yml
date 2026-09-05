@@ -41,6 +41,8 @@ jobs:
             echo "无变更"
           else
             git commit -m "chore(intl): 全量回填 $(date -u +%Y-%m-%d)"
+            git config pull.rebase true
+            git pull --rebase origin main || true
             git push
           fi
       - name: 组装站点
