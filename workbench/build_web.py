@@ -373,7 +373,7 @@ def build_html(reg, clin, logs):
   <h1>兽药注册与审批数据查询工作台</h1>
   <div class="sub">注册审批（农业农村部公告）· 临床审批（兽药临床试验批件）</div>
   <div class="stats">
-    <div class="stat"><b>__REG_TOTAL__</b><span>注册审批总记录</span></div>
+    <div class="stat"><b>__REG_TOTAL__</b><span>注册审批记录</span></div>
     <div class="stat"><b>__REG_DOM__</b><span>国产新兽药</span></div>
     <div class="stat"><b>__REG_IMP__</b><span>进口注册</span></div>
     <div class="stat"><b>__REG_PET__</b><span>宠物相关</span></div>
@@ -406,7 +406,7 @@ def build_html(reg, clin, logs):
         <label class="pet"><input type="checkbox" id="regPet"> 仅宠物用药</label>
       </div>
       <div class="frow">
-        <input type="text" id="regQ" placeholder="搜索：药品名称 / 企业 / 公告号 / 证书号">
+        <input type="text" id="regQ" placeholder="搜索 药品名称/企业/公告号/证书号">
         <button class="btn primary" id="regSearch">搜索</button>
         <button class="btn ghost" id="regExp">导出 CSV</button>
       </div>
@@ -431,9 +431,9 @@ def build_html(reg, clin, logs):
   <!-- ============ 临床审批 ============ -->
   <div class="panel" id="panelClin">
     <div class="note-card">
-      <h3>来源说明</h3>
+      <h3>数据来源</h3>
       <p><b>主数据源：</b><span class="src">__VDTS__</span>（中国兽医药品监察所 兽药注册审批查询系统）</p>
-      <p><b>补充机制：</b>当主管网站数据未及时更新时，从各企业公告 / 公开新闻中补充核查，并将新增记录写入本地数据库，同时在下方「更新动态」中标注来源与日期。</p>
+      <p><b>补充机制：</b>当官方公告数据未及时更新时，从各企业公告 / 公开信息中人工核查补充，并将新增记录写入本地数据库，同时在下方「更新动态」中标注来源与日期。</p>
       <p>当前共 <b>__CLIN_TOTAL__</b> 条临床审批记录，其中国产新兽药注册临床 <b>__CLIN_DOM__</b> 条、宠物相关 <b>__CLIN_PET__</b> 条。</p>
     </div>
     <div class="filters">
@@ -447,7 +447,7 @@ def build_html(reg, clin, logs):
         <label class="pet"><input type="checkbox" id="clinPet"> 仅宠物用药</label>
       </div>
       <div class="frow">
-        <input type="text" id="clinQ" placeholder="搜索：药品名称 / 企业 / 批件号 / 适应症">
+        <input type="text" id="clinQ" placeholder="搜索 药品名称/企业/批件号/适应症">
         <button class="btn primary" id="clinSearch">搜索</button>
         <button class="btn ghost" id="clinExp">导出 CSV</button>
       </div>
@@ -626,7 +626,7 @@ document.getElementById('clinExp').onclick=()=>exportCSV(clinView,'临床审批�
 /* ---------- 更新动态 ---------- */
 function renderLog(){
   const domName={clinical:'临床审批',registration:'注册审批'};
-  const srcName={vdts:'主管网站',enterprise_news:'企业新闻补充',manual:'人工核查'};
+  const srcName={vdts:'官方公告',enterprise_news:'企业动态',manual:'人工核对'};
   document.getElementById('logList').innerHTML = LOG.map(l=>{
     return '<li>'+
       '<div class="ts">'+esc(l.ts)+(domName[l.domain]?('<span class="badge">'+esc(domName[l.domain])+'</span>'):'')+'</div>'+
@@ -649,7 +649,10 @@ document.querySelectorAll('.tab').forEach(t=>{
 
 /* ---------- CSV 导出 ---------- */
 function exportCSV(rows,filename,keys,headers){
-  if(!rows.length){alert('当前没有可导出的数据');return;}
+  if(!rows.length){alert('暂无可导出数据，请先调整筛选条件');return;}
+  const _d=new Date();
+  const _ds=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
+  filename=String(filename).replace('.csv','')+'_'+_ds+'.csv';
   const esc=v=>`"${(v==null?'':String(v)).replace(/"/g,'""')}"`;
   const lines=[headers.map(esc).join(',')];
   rows.forEach(r=>lines.push(keys.map(k=>esc(r[k])).join(',')));

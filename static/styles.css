@@ -206,3 +206,8 @@ tbody tr:hover { background: #f9fbfe; }
   .sync-detail{font-size:12px;padding:8px 10px;}
 }
 /* SYNC-BAR:END */
+
+/* Brand subtitle (deployed workbench) */
+.brand-titles{display:flex;flex-direction:column;line-height:1.2;min-width:0;}
+.app-subtitle{font-size:11px;font-weight:500;color:#a9c0e2;margin-top:2px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media (max-width:720px){ .app-subtitle{font-size:10px;} }
