@@ -588,6 +588,15 @@ def _parse_ema_html(html: str) -> List[Dict[str, Any]]:
         ptype = "Vaccine" if ("vaccin" in blob or "immunolog" in blob) \
             else "Therapeutic"
 
+        subs_joined = "; ".join(subs) or None
+        indication = subs_joined
+        if subs_joined:
+            try:
+                from ema_indications import enrich_indication
+                indication = enrich_indication(subs_joined, ptype) or subs_joined
+            except Exception:  # pragma: no cover - enrichment must never break parse
+                indication = subs_joined
+
         out.append({
             "region": "EU",
             "species": species,
@@ -595,7 +604,7 @@ def _parse_ema_html(html: str) -> List[Dict[str, Any]]:
             "product_name": name,
             "approval_number": f"UPD-{upd_id}",
             "manufacturer": None,
-            "indication": "; ".join(subs) or None,
+            "indication": indication,
             "dosage_form": (form[0] if form else None),
             "strength": None,
             "approval_date": None,
