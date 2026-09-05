@@ -186,8 +186,10 @@ USDA_SECTION_TYPE = {
 }
 
 # Species keyword detection (the workbench focuses on cat & dog products).
-_CANINE = ("canine", "dog", "puppy", "kennel")
-_FELINE = ("feline", "cat", "kitten")
+# Whole-word matching only - a naive substring check would treat "cattle" as
+# "cat" and pull bovine/ovine/poultry products into the cat/dog tracker.
+_CANINE_RE = re.compile(r"(?i)\b(canine|dog|dogs|puppy|puppies|bitch|bitches|kennel|kennels)\b")
+_FELINE_RE = re.compile(r"(?i)\b(feline|cat|cats|kitten|kittens)\b")
 
 # Product-code (PCN) line pattern, e.g. "48B5.10", "4BC5.20", "49F6.2B",
 # "49L5.R0", "4905.20", "4993.2B", "4855.00", "49K9.R0".
@@ -198,8 +200,8 @@ _VLN_RE = re.compile(r"\b(\d{3}[A-Z]?)\b")
 
 def _infer_species(name: str) -> Optional[str]:
     low = (name or "").lower()
-    has_dog = any(k in low for k in _CANINE)
-    has_cat = any(k in low for k in _FELINE)
+    has_dog = bool(_CANINE_RE.search(low))
+    has_cat = bool(_FELINE_RE.search(low))
     if has_dog and has_cat:
         return "Both"
     if has_dog:
@@ -299,6 +301,41 @@ def _match_usda_section(line: str) -> Optional[str]:
     return None
 
 
+# Script ranges that indicate a non-English (Greek/Cyrillic/etc.) string.
+_NON_LATIN_RE = re.compile(
+    r"[\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF"
+    r"\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]")
+
+
+
+def _clean_ema_name(name):
+    """Keep Latin-script product text; drop non-English segments (EU rows)."""
+    parts = [x.strip() for x in (name or "").split(",")]
+    kept = [x for x in parts if x and not _NON_LATIN_RE.search(x)]
+    out = ", ".join(kept) if kept else _NON_LATIN_RE.sub(" ", name or "")
+    return re.sub(r"\s+", " ", out).strip(" ,-")
+
+
+def _clean_usda_text(s):
+    """Collapse whitespace and strip PDF table-column junk.
+
+    The codebook layout bleeds catalogue codes and page-table numbers into the
+    product description (e.g. "502A.00 373 671 502A.01 190 373 ..."). Drop
+    code-shaped tokens and the bare numbers that trail them.
+    """
+    out = []
+    drop_numbers = False
+    for tok in (s or "").split():
+        if re.fullmatch(r"\d{1,3}[A-Za-z0-9]*\.\w+", tok):
+            drop_numbers = True
+            continue
+        if drop_numbers and re.fullmatch(r"\d{1,4}", tok):
+            continue
+        drop_numbers = False
+        out.append(tok)
+    return re.sub(r"\s+", " ", " ".join(out)).strip(" -,")
+
+
 def _parse_usda_pdf(raw_bytes: bytes) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """Parse the USDA codebook PDF bytes into canonical records."""
     try:
@@ -325,12 +362,11 @@ def _parse_usda_pdf(raw_bytes: bytes) -> Tuple[List[Dict[str, Any]], Dict[str, A
             """Build + normalise one product; return record or None."""
             if not nlines or not code:
                 return None
-            pname = " ".join(nlines).strip()
-            pname = re.sub(r"\s+", " ", pname)
+            pname = _clean_usda_text(" ".join(nlines))
             if not pname:
                 return None
             vlns = _VLN_RE.findall(rest)
-            form = _VLN_RE.sub("", rest).strip(" -,")
+            form = _clean_usda_text(_VLN_RE.sub("", rest))
             makers = []
             unmapped = 0
             for v in vlns:
@@ -533,7 +569,7 @@ def _parse_ema_html(html: str) -> List[Dict[str, Any]]:
         if not m:
             continue
         upd_id = m.group(1)
-        name = _strip_tags(m.group(2))
+        name = _clean_ema_name(_strip_tags(m.group(2)))
         if not name:
             continue
 
