@@ -395,12 +395,20 @@ IND = {
 
     "amlodipine": "Calcium-channel blocker for the management of systemic hypertension in cats (and dogs)",
     "imidocarb": "Antiprotozoal for the treatment of babesiosis",
+
+    "aglepristone": "Antiprogestin used for the termination of pregnancy after mismating in dogs",
 }
 
 # --------------------------------------------------------------------------
 # matching helpers
 # --------------------------------------------------------------------------
 _HOMEOPATHY_RE = re.compile(r"(?i)\b([dl])\d{1,4}\b|homaccord|heel\b|ad us\.? vet")
+
+_FLUID_ITEMS = {
+    "sodium chloride", "potassium chloride", "calcium chloride",
+    "calcium gluconate", "magnesium chloride", "sodium lactate", "glucose",
+    "boric acid", "sodium bicarbonate", "magnesium sulfate",
+}
 
 _COMBINED_HINTS = [
     # ordered list of (all_must_be_present, text)
@@ -509,6 +517,12 @@ def enrich_indication(subs_text, product_type="Therapeutic"):
         if c and c not in cans:
             cans.append(c)
 
+    if items and all(
+            any(b in _canonical(x, strip_salts=False) for b in _FLUID_ITEMS)
+            for x in items):
+        return ("Intravenous electrolyte/fluid solution for rehydration and "
+                "electrolyte balance (supportive therapy).")
+
     # combined-product phrases (prefer an explicit combination text)
     for need, txt in _COMBINED_HINTS:
         if all(any(n in c for c in cans) for n in need):
@@ -523,7 +537,7 @@ def enrich_indication(subs_text, product_type="Therapeutic"):
         elif not v:
             unknown.append(c)
     if parts:
-        text = " ".join(parts)
+        text = "; ".join(dict.fromkeys(parts))
         if unknown:
             text += (" Additional components: %s (see official labelling)."
                      % ", ".join(sorted(set(unknown))))
