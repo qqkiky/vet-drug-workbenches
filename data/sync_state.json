@@ -1,6 +1,17 @@
 {
   "history": [
     {
+      "date": "2026-09-10",
+      "at": "2026-09-10 16:14:23",
+      "result": "ok",
+      "added": 23,
+      "updated": 0,
+      "status_change": 0,
+      "total": 349,
+      "runs": 1,
+      "message": "新增 23 条，变更 0 条"
+    },
+    {
       "date": "2026-09-09",
       "at": "2026-09-09 16:24:51",
       "result": "ok",
@@ -244,20 +255,20 @@
     }
   ],
   "latest": {
-    "last_sync_at": "2026-09-09 16:24:51",
-    "last_sync_date": "2026-09-09",
+    "last_sync_at": "2026-09-10 16:14:23",
+    "last_sync_date": "2026-09-10",
     "result": "ok",
-    "message": "数据源无新增，已是最新",
-    "added": 0,
+    "message": "新增 23 条，变更 0 条",
+    "added": 23,
     "updated": 0,
     "status_change": 0,
-    "total": 326,
+    "total": 349,
     "sources": [
       {
         "key": "EMA-CVMP",
         "label": "欧盟 EMA/CVMP",
         "ok": true,
-        "count": 9,
+        "count": 32,
         "url": "https://medicines.health.europa.eu/veterinary/en/search-medicines",
         "error": ""
       },
@@ -272,7 +283,7 @@
     ],
     "new_items": [],
     "new_recent_count": 0,
-    "duration_sec": 383.5,
+    "duration_sec": 463.5,
     "window_days": 120
   }
 }
