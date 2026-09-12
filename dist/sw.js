@@ -1,7 +1,7 @@
 // Service worker for the mobile PWA.
 // BUILD is rewritten by build_static.py on every build, so a new deployment
 // creates a fresh cache and evicts the previous one automatically.
-const BUILD = "20260911162345";
+const BUILD = "20260912153046";
 const CACHE = "bio-" + BUILD;
 const ASSETS = ["index.html", "app.js", "styles.css", "chart.umd.min.js",
                 "manifest.webmanifest", "icon-192.png", "icon-512.png", "data.json"];
