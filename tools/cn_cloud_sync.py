@@ -43,8 +43,13 @@ def snapshot() -> dict:
         }
 
 
-def run_step(name: str, relative_script: str, env: dict | None = None) -> dict:
-    command = [sys.executable, str(ROOT / relative_script)]
+def run_step(
+    name: str,
+    relative_script: str,
+    env: dict | None = None,
+    args: list[str] | None = None,
+) -> dict:
+    command = [sys.executable, str(ROOT / relative_script), *(args or [])]
     completed = subprocess.run(
         command,
         cwd=ROOT,
@@ -132,7 +137,11 @@ def main() -> int:
         vdts_env,
     )
 
-    fill = run_step("适应症补全", "workbench/fill_all_indications.py")
+    fill = run_step(
+        "适应症补全",
+        "workbench/fill_all_indications.py",
+        args=["--no-rebuild"],
+    )
     web = run_step("国内网页重建", "workbench/build_web.py")
     if not fill["ok"] or not web["ok"]:
         raise RuntimeError("国内工作台重建失败；为避免发布半成品，本次不提交")
