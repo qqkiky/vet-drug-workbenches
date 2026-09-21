@@ -1,54 +1,76 @@
-name: 国际工作台每日同步
+name: 国内与国际工作台每周同步
 
 on:
   schedule:
-    # 每天 20:00 北京时间（12:00 UTC）
-    - cron: '0 12 * * *'
+    # 北京时间每周三、周五 22:00（UTC 14:00）
+    - cron: '0 14 * * 3,5'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/daily-intl.yml'
+      - 'tools/cn_cloud_sync.py'
+      - 'workbench/build_workbench.py'
+      - 'workbench/ingest_vdts_clinical.py'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: veterinary-drug-data-sync
   cancel-in-progress: false
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TZ: Asia/Shanghai
+      PYTHONUNBUFFERED: '1'
+      REGULATORY_TIMEOUT: '60'
+      EMA_MAX_PAGES: '40'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
       - name: 安装依赖
         run: pip install -r requirements.txt
-      - name: 抓取并重建（USDA/CVB + EMA/CVMP）
-        run: python daily_sync.py --json
-        env:
-          REGULATORY_TIMEOUT: "60"
-          EMA_MAX_PAGES: "40"
-      - name: 追加变更日志并提交推送
+      - name: 同步国内与国际官方数据源
+        shell: bash
         run: |
+          set +e
+          python daily_sync.py --json
+          intl_status=$?
+          python tools/cn_cloud_sync.py
+          cn_status=$?
+          set -e
+
+          if [ "$cn_status" -ne 0 ]; then
+            git restore --source=HEAD --staged --worktree -- workbench
+          fi
+
           python tools/append_changelog.py || true
+
+          echo "international_status=$intl_status"
+          echo "domestic_status=$cn_status"
+          if [ "$intl_status" -ne 0 ] && [ "$cn_status" -ne 0 ]; then
+            echo "国内、国际同步均失败，本次不发布旧数据"
+            exit 1
+          fi
+      - name: 提交数据、网页和变更日志
+        shell: bash
+        run: |
           git config user.name "qqkiky"
           git config user.email "qqkiky@users.noreply.github.com"
-          git add data dist static docs
+          git add data dist static workbench docs
           if git diff --cached --quiet; then
             echo "无数据变更，跳过提交"
-          else
-            git commit -m "chore(intl): 每日同步 $(date -u +%Y-%m-%d)"
-            git config pull.rebase true
-            git pull --rebase origin main || true
-            git push
+            exit 0
           fi
-      - name: 组装站点
-        run: python publish_site.py
-      - name: 上传站点
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-      - name: 发布到 GitHub Pages
-        uses: actions/deploy-pages@v4
+          git commit -m "chore: 工作台定时同步 $(date '+%Y-%m-%d %H:%M')"
+          git pull --rebase origin main
+          git push origin HEAD:main

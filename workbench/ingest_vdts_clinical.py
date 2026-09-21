@@ -156,38 +156,60 @@ def is_pet(species: str, drug_name: str) -> int:
     return 1 if any(k in text for k in ("猫", "犬", "狗", "宠", "兔")) else 0
 
 
+def _load_cached_export(reason):
+    if not os.path.exists(JSON_PATH):
+        raise RuntimeError("实时抓取失败且没有可用缓存：%s" % reason)
+    print("[fetch] 实时抓取失败，回退已提交缓存：%s" % reason)
+    with open(JSON_PATH, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def fetch_all():
-    """从 vdts API 分页抓取全部临床审批记录。"""
-    if os.path.exists(JSON_PATH):
-        mtime = datetime.datetime.fromtimestamp(os.path.getmtime(JSON_PATH))
-        age = datetime.datetime.now() - mtime
-        if age.total_seconds() < 3600 * 24:
-            print(f"[fetch] 使用缓存 {JSON_PATH}（{(age.total_seconds()/60):.0f} 分钟前抓取）")
-            return json.load(open(JSON_PATH, encoding="utf-8"))
+    """每次优先实时抓取；失败时仅在非严格模式回退到已提交缓存。
 
-    all_rows = []
-    page = 1
-    rows_per_page = 100
-    while True:
-        payload = {"page": page, "rows": rows_per_page, "conditionItems": []}
-        r = requests.post(API_URL, json=payload, timeout=60)
-        r.raise_for_status()
-        data = r.json()
-        total = data.get("records", 0)
-        rows = data.get("rows", [])
-        print(f"[fetch] page {page}: {len(rows)} rows, total {total}")
-        if not rows:
-            break
-        all_rows.extend(rows)
-        if len(all_rows) >= total:
-            break
-        page += 1
-        time.sleep(0.3)
+    Git checkout 会刷新文件 mtime，因此不能再用“缓存文件小于 24 小时”判断
+    数据是否新鲜，否则云端每次运行都会误把旧快照当成当天数据。
+    """
+    try:
+        all_rows = []
+        page = 1
+        rows_per_page = 100
+        expected_total = None
+        while True:
+            payload = {"page": page, "rows": rows_per_page, "conditionItems": []}
+            r = requests.post(API_URL, json=payload, timeout=60)
+            r.raise_for_status()
+            data = r.json()
+            expected_total = int(data.get("records") or 0)
+            rows = data.get("rows", [])
+            print(f"[fetch] page {page}: {len(rows)} rows, total {expected_total}")
+            if not rows:
+                break
+            all_rows.extend(rows)
+            if expected_total and len(all_rows) >= expected_total:
+                break
+            page += 1
+            time.sleep(0.3)
 
-    out = {"records": len(all_rows), "rows": all_rows, "fetched_at": datetime.datetime.now().isoformat()}
-    with open(JSON_PATH, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
-    return out
+        if not all_rows:
+            raise RuntimeError("官方接口返回 0 条记录")
+        if expected_total and len(all_rows) < expected_total:
+            raise RuntimeError(
+                "分页抓取不完整：期望 %d 条，实际 %d 条" % (expected_total, len(all_rows))
+            )
+
+        out = {
+            "records": len(all_rows),
+            "rows": all_rows,
+            "fetched_at": datetime.datetime.now().isoformat(),
+        }
+        with open(JSON_PATH, "w", encoding="utf-8") as handle:
+            json.dump(out, handle, ensure_ascii=False, indent=2)
+        return out
+    except Exception as exc:
+        if os.environ.get("VDTS_REQUIRE_LIVE") == "1":
+            raise RuntimeError("国家兽药基础数据库实时抓取失败：%s" % exc) from exc
+        return _load_cached_export(exc)
 
 
 def import_to_db(data):
