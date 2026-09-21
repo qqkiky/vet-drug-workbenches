@@ -1,0 +1,64 @@
+{
+  "history": [
+    {
+      "date": "2026-09-22",
+      "at": "2026-09-22 01:52:07",
+      "result": "ok",
+      "registration_added": 0,
+      "clinical_added": 0,
+      "registration_total": 2279,
+      "clinical_total": 953,
+      "sources": [
+        {
+          "name": "农业农村部公告",
+          "script": "workbench/build_workbench.py",
+          "ok": true,
+          "returncode": 0,
+          "error": ""
+        },
+        {
+          "name": "国家兽药基础数据库临床审批",
+          "script": "workbench/ingest_vdts_clinical.py",
+          "ok": true,
+          "returncode": 0,
+          "error": ""
+        }
+      ]
+    }
+  ],
+  "latest": {
+    "date": "2026-09-22",
+    "started_at": "2026-09-22 01:51:05",
+    "finished_at": "2026-09-22 01:52:07",
+    "result": "ok",
+    "duration_sec": 61.2,
+    "before": {
+      "registration_total": 2279,
+      "clinical_total": 953,
+      "processed_announcements": 403
+    },
+    "after": {
+      "registration_total": 2279,
+      "clinical_total": 953,
+      "processed_announcements": 403
+    },
+    "registration_added": 0,
+    "clinical_added": 0,
+    "sources": [
+      {
+        "name": "农业农村部公告",
+        "script": "workbench/build_workbench.py",
+        "ok": true,
+        "returncode": 0,
+        "error": ""
+      },
+      {
+        "name": "国家兽药基础数据库临床审批",
+        "script": "workbench/ingest_vdts_clinical.py",
+        "ok": true,
+        "returncode": 0,
+        "error": ""
+      }
+    ]
+  }
+}
