@@ -218,7 +218,8 @@ def rebuild_web():
 
 if __name__ == "__main__":
     stats_only = "--stats" in sys.argv
+    no_rebuild = "--no-rebuild" in sys.argv
     fill(stats_only=stats_only)
-    if not stats_only:
+    if not stats_only and not no_rebuild:
         rebuild_web()
         print("\n提示：如需重新部署网页，请运行 workbuddy_cloudstudio_deploy 部署 workbench/web 目录。")
