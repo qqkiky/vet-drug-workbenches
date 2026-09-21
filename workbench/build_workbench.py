@@ -146,6 +146,8 @@ def collect_announcements():
             items.append(it)
     if n_fail:
         print("列表页联网失败 %d/%d 页（已回退缓存，本次增量检测可能不完整）" % (n_fail, len(pages)))
+    if not items:
+        raise RuntimeError("农业农村部公告列表未返回任何记录；拒绝把空抓取视为成功")
     return items
 
 
