@@ -40,6 +40,8 @@ jobs:
             echo "无数据变更，跳过提交"
           else
             git commit -m "chore(intl): 每日同步 $(date -u +%Y-%m-%d)"
+            git config pull.rebase true
+            git pull --rebase origin main || true
             git push
           fi
       - name: 组装站点
