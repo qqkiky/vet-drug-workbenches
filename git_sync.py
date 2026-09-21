@@ -58,6 +58,13 @@ def main():
     if run(["git", "commit", "-m", message]) != 0:
         log("git commit 失败")
         return 1
+    # 云端定时任务每天也会提交，推送前先同步，避免 non-fast-forward 被拒
+    log("同步远程（git pull --rebase）")
+    r = subprocess.run(["git", "pull", "--rebase"], cwd=ROOT, text=True,
+                       encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        log("git pull --rebase 失败（可能存在冲突），请手动处理后重试")
+        return 1
     if run(["git", "push"]) != 0:
         log("git push 失败（请检查 GitHub 登录与网络）")
         return 1
