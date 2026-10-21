@@ -1,6 +1,17 @@
 {
   "history": [
     {
+      "date": "2026-10-22",
+      "at": "2026-10-22 02:19:07",
+      "result": "ok",
+      "added": 0,
+      "updated": 0,
+      "status_change": 0,
+      "total": 582,
+      "runs": 1,
+      "message": "数据源无新增，已是最新"
+    },
+    {
       "date": "2026-10-17",
       "at": "2026-10-17 01:45:04",
       "result": "ok",
@@ -464,8 +475,8 @@
     }
   ],
   "latest": {
-    "last_sync_at": "2026-10-17 01:45:04",
-    "last_sync_date": "2026-10-17",
+    "last_sync_at": "2026-10-22 02:19:07",
+    "last_sync_date": "2026-10-22",
     "result": "ok",
     "message": "数据源无新增，已是最新",
     "added": 0,
@@ -492,7 +503,7 @@
     ],
     "new_items": [],
     "new_recent_count": 0,
-    "duration_sec": 295.2,
+    "duration_sec": 319.5,
     "window_days": 120
   }
 }
