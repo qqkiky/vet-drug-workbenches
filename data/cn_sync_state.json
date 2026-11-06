@@ -1,6 +1,31 @@
 {
   "history": [
     {
+      "date": "2026-11-07",
+      "at": "2026-11-07 04:13:41",
+      "result": "ok",
+      "registration_added": 0,
+      "clinical_added": 20,
+      "registration_total": 2301,
+      "clinical_total": 973,
+      "sources": [
+        {
+          "name": "农业农村部公告",
+          "script": "workbench/build_workbench.py",
+          "ok": true,
+          "returncode": 0,
+          "error": ""
+        },
+        {
+          "name": "国家兽药基础数据库临床审批",
+          "script": "workbench/ingest_vdts_clinical.py",
+          "ok": true,
+          "returncode": 0,
+          "error": ""
+        }
+      ]
+    },
+    {
       "date": "2026-11-05",
       "at": "2026-11-05 04:40:06",
       "result": "ok",
@@ -352,9 +377,9 @@
     }
   ],
   "latest": {
-    "date": "2026-11-05",
-    "started_at": "2026-11-05 04:39:18",
-    "finished_at": "2026-11-05 04:40:06",
+    "date": "2026-11-07",
+    "started_at": "2026-11-07 04:12:52",
+    "finished_at": "2026-11-07 04:13:41",
     "result": "ok",
     "duration_sec": 48.7,
     "before": {
@@ -364,11 +389,11 @@
     },
     "after": {
       "registration_total": 2301,
-      "clinical_total": 953,
+      "clinical_total": 973,
       "processed_announcements": 408
     },
     "registration_added": 0,
-    "clinical_added": 0,
+    "clinical_added": 20,
     "sources": [
       {
         "name": "农业农村部公告",
