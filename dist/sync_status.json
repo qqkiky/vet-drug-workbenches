@@ -1,9 +1,9 @@
 {
-  "last_sync_at": "2026-11-07 04:10:28",
-  "last_sync_date": "2026-11-07",
-  "result": "ok",
-  "message": "新增 108 条，变更 0 条",
-  "added": 108,
+  "last_sync_at": "2026-11-12 05:00:00",
+  "last_sync_date": "2026-11-12",
+  "result": "partial",
+  "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新",
+  "added": 0,
   "updated": 0,
   "status_change": 0,
   "total": 801,
@@ -11,10 +11,10 @@
     {
       "key": "EMA-CVMP",
       "label": "欧盟 EMA/CVMP",
-      "ok": true,
-      "count": 111,
+      "ok": false,
+      "count": 0,
       "url": "https://medicines.health.europa.eu/veterinary/en/search-medicines",
-      "error": ""
+      "error": "could not load first page of UPD search view"
     },
     {
       "key": "USDA-CVB",
@@ -27,11 +27,22 @@
   ],
   "new_items": [],
   "new_recent_count": 0,
-  "duration_sec": 144.0,
+  "duration_sec": 8.0,
   "window_days": 120,
-  "today_added": 108,
+  "today_added": 0,
   "runs_today": 1,
   "history": [
+    {
+      "date": "2026-11-12",
+      "at": "2026-11-12 05:00:00",
+      "result": "partial",
+      "added": 0,
+      "updated": 0,
+      "status_change": 0,
+      "total": 801,
+      "runs": 1,
+      "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新"
+    },
     {
       "date": "2026-11-07",
       "at": "2026-11-07 04:10:28",
@@ -174,17 +185,6 @@
       "total": 440,
       "runs": 1,
       "message": "新增 42 条，变更 0 条"
-    },
-    {
-      "date": "2026-09-24",
-      "at": "2026-09-24 02:05:11",
-      "result": "ok",
-      "added": 0,
-      "updated": 0,
-      "status_change": 0,
-      "total": 398,
-      "runs": 1,
-      "message": "数据源无新增，已是最新"
     }
   ]
 }
