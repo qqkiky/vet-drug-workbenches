@@ -157,6 +157,8 @@ CLIN_REG_MAP = {
 
 
 def load_registration():
+    approval_path = os.path.join(HERE, "approval_numbers.json")
+    approvals = json.load(open(approval_path, encoding="utf-8")) if os.path.exists(approval_path) else {}
     c = sqlite3.connect(DB)
     c.row_factory = sqlite3.Row
     rows = c.execute(
@@ -183,6 +185,7 @@ def load_registration():
             "org": r["org"] or "",
             "country": country,
             "certNo": r["cert_no"] or "",
+            "approvalNumbers": approvals.get("".join((r["drug_name"] or "").split()), []) if tt != "import_drug" else [],
             "category": r["category"] or "",
             "changeItem": r["change_item"] or "",
             "indication": r["indication"] or "",
@@ -388,6 +391,7 @@ def build_html(reg, clin, logs):
 
   <!-- ============ 注册审批 ============ -->
   <div class="panel active" id="panelReg">
+    <div class="note-card">兽药批准文号来自国家兽药基础数据库，按药品通用名精确匹配，列出同名产品的文号及生产企业；同名匹配不等于该注册证书与某一生产文号存在直接对应关系。进口注册使用证书号。</div>
     <div class="filters">
       <div class="frow">
         <select id="regType">
@@ -416,7 +420,7 @@ def build_html(reg, clin, logs):
       <table>
         <thead><tr>
           <th>公告号</th><th>公告日期</th><th>注册类型</th><th>药品类型</th>
-          <th>药品名称</th><th>生产企业</th><th>适应症</th><th>国别</th><th>证书号</th><th>来源</th>
+          <th>药品名称</th><th>生产企业</th><th>适应症</th><th>国别</th><th>证书号</th><th>兽药批准文号 / 对应企业</th><th>来源</th>
         </tr></thead>
         <tbody id="regBody"></tbody>
       </table>
@@ -523,7 +527,7 @@ function regFilter(){
     if(pet && r.isPet!==1) return false;
     if(yr && !(r.annDate||'').includes(yr)) return false;
     if(q){
-      const hay=(r.drugName+' '+r.org+' '+r.annNum+' '+r.certNo+' '+r.indication).toLowerCase();
+      const hay=(r.drugName+' '+r.org+' '+r.annNum+' '+r.certNo+' '+r.indication+' '+r.approvalNumbers.map(a=>a.number+' '+a.company).join(' ')).toLowerCase();
       if(!hay.includes(q)) return false;
     }
     return true;
@@ -549,9 +553,10 @@ function renderReg(){
       '<td>'+esc(r.indication)+'</td>'+'<td>'+esc(r.country)+'</td>'+
       
       '<td>'+esc(r.certNo)+'</td>'+
+      '<td>'+(r.approvalNumbers.length ? '<details><summary>'+r.approvalNumbers.length+' 个文号</summary>'+r.approvalNumbers.map(a=>esc(a.number)+' · '+esc(a.company)).join('<br>')+'</details>' : '')+'</td>'+
       '<td>'+srcCell(r.sourceUrl)+'</td>'+
     '</tr>';
-  }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">无匹配数据</td></tr>';
+  }).join('') : '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:24px">无匹配数据</td></tr>';
   document.getElementById('regCount').textContent='共 '+total+' 条结果';
   document.getElementById('regPage').textContent='第 '+regPage+' / '+pages+' 页';
 }
@@ -564,8 +569,8 @@ document.getElementById('regYear').onchange=()=>{regPage=1;renderReg();};
 document.getElementById('regPrev').onclick=()=>{if(regPage>1){regPage--;renderReg();}};
 document.getElementById('regNext').onclick=()=>{regPage++;renderReg();};
 document.getElementById('regExp').onclick=()=>exportCSV(regView,'注册审批数据.csv',
-  ['annNum','annDate','regType','drugType','drugName','org','country','certNo','sourceUrl'],
-  ['公告号','公告日期','注册类型','药品类型','药品名称','企业','国别','证书号','来源']);
+  ['annNum','annDate','regType','drugType','drugName','org','country','certNo','approvalNumbers','sourceUrl'],
+  ['公告号','公告日期','注册类型','药品类型','药品名称','企业','国别','证书号','兽药批准文号及企业','来源']);
 
 /* ---------- 临床审批 ---------- */
 let clinPage=1, clinView=[];
@@ -655,7 +660,7 @@ function exportCSV(rows,filename,keys,headers){
   filename=String(filename).replace('.csv','')+'_'+_ds+'.csv';
   const esc=v=>`"${(v==null?'':String(v)).replace(/"/g,'""')}"`;
   const lines=[headers.map(esc).join(',')];
-  rows.forEach(r=>lines.push(keys.map(k=>esc(r[k])).join(',')));
+  rows.forEach(r=>lines.push(keys.map(k=>esc(k==='approvalNumbers' ? r[k].map(a=>a.number+' · '+a.company).join('；') : r[k])).join(',')));
   const blob=new Blob(['\uFEFF'+lines.join('\\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
