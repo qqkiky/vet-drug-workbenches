@@ -12,6 +12,8 @@ on:
       - 'tools/cn_cloud_sync.py'
       - 'workbench/build_workbench.py'
       - 'workbench/ingest_vdts_clinical.py'
+      - 'tools/cn_approval_numbers.py'
+      - 'workbench/build_web.py'
 
 permissions:
   contents: write
