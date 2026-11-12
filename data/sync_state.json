@@ -2,13 +2,13 @@
   "history": [
     {
       "date": "2026-11-12",
-      "at": "2026-11-12 05:00:00",
+      "at": "2026-11-12 23:37:25",
       "result": "partial",
       "added": 0,
       "updated": 0,
       "status_change": 0,
       "total": 801,
-      "runs": 1,
+      "runs": 2,
       "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新"
     },
     {
@@ -541,7 +541,7 @@
     }
   ],
   "latest": {
-    "last_sync_at": "2026-11-12 05:00:00",
+    "last_sync_at": "2026-11-12 23:37:25",
     "last_sync_date": "2026-11-12",
     "result": "partial",
     "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新",
@@ -569,7 +569,7 @@
     ],
     "new_items": [],
     "new_recent_count": 0,
-    "duration_sec": 8.0,
+    "duration_sec": 4.7,
     "window_days": 120
   }
 }
