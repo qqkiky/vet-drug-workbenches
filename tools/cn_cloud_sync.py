@@ -137,6 +137,11 @@ def main() -> int:
         vdts_env,
     )
 
+    approvals = run_step(
+        "国家兽药基础数据库产品批准文号",
+        "tools/cn_approval_numbers.py",
+    )
+
     fill = run_step(
         "适应症补全",
         "workbench/fill_all_indications.py",
@@ -146,7 +151,7 @@ def main() -> int:
     if not fill["ok"] or not web["ok"]:
         raise RuntimeError("国内工作台重建失败；为避免发布半成品，本次不提交")
 
-    source_results = [announcement, clinical]
+    source_results = [announcement, clinical, approvals]
     if not any(item["ok"] for item in source_results):
         raise RuntimeError("两个国内官方数据源均不可用；本次不提交旧数据")
 
