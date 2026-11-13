@@ -1,5 +1,5 @@
 
-const BUILD = "20261112234050";
+const BUILD = "20261114044608";
 const SHELL = ['index.html','manifest.json','icon-192.png','icon-512.png','version.json'];
 const CACHE = 'wb-shell-' + BUILD;
 self.addEventListener('install', function(e){

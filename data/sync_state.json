@@ -1,6 +1,17 @@
 {
   "history": [
     {
+      "date": "2026-11-14",
+      "at": "2026-11-14 04:42:12",
+      "result": "partial",
+      "added": 0,
+      "updated": 0,
+      "status_change": 0,
+      "total": 801,
+      "runs": 1,
+      "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新"
+    },
+    {
       "date": "2026-11-12",
       "at": "2026-11-12 23:37:25",
       "result": "partial",
@@ -541,8 +552,8 @@
     }
   ],
   "latest": {
-    "last_sync_at": "2026-11-12 23:37:25",
-    "last_sync_date": "2026-11-12",
+    "last_sync_at": "2026-11-14 04:42:12",
+    "last_sync_date": "2026-11-14",
     "result": "partial",
     "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新",
     "added": 0,
@@ -569,7 +580,7 @@
     ],
     "new_items": [],
     "new_recent_count": 0,
-    "duration_sec": 4.7,
+    "duration_sec": 3.2,
     "window_days": 120
   }
 }
