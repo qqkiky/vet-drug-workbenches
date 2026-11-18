@@ -1,6 +1,6 @@
 {
-  "last_sync_at": "2026-11-14 04:42:12",
-  "last_sync_date": "2026-11-14",
+  "last_sync_at": "2026-11-19 05:40:07",
+  "last_sync_date": "2026-11-19",
   "result": "partial",
   "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新",
   "added": 0,
@@ -27,11 +27,22 @@
   ],
   "new_items": [],
   "new_recent_count": 0,
-  "duration_sec": 3.2,
+  "duration_sec": 4.1,
   "window_days": 120,
   "today_added": 0,
   "runs_today": 1,
   "history": [
+    {
+      "date": "2026-11-19",
+      "at": "2026-11-19 05:40:07",
+      "result": "partial",
+      "added": 0,
+      "updated": 0,
+      "status_change": 0,
+      "total": 801,
+      "runs": 1,
+      "message": "部分数据源不可用（欧盟 EMA/CVMP），其余已更新"
+    },
     {
       "date": "2026-11-14",
       "at": "2026-11-14 04:42:12",
@@ -174,17 +185,6 @@
       "total": 451,
       "runs": 1,
       "message": "数据源无新增，已是最新"
-    },
-    {
-      "date": "2026-10-01",
-      "at": "2026-10-01 02:44:08",
-      "result": "ok",
-      "added": 11,
-      "updated": 0,
-      "status_change": 0,
-      "total": 451,
-      "runs": 1,
-      "message": "新增 11 条，变更 0 条"
     }
   ]
 }
